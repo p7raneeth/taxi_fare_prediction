@@ -3,9 +3,14 @@ from flask import Flask, request, jsonify, render_template
 import pickle
 from datetime import datetime
 from geopy.geocoders import Nominatim
+import zipfile
+
 
 app = Flask(__name__)
-model = pickle.load(open(r'C:\Users\Vikesh\PycharmProjects\archive\model.pkl', 'rb'))
+with zipfile.ZipFile('model.zip', 'r') as my_zip:
+    my_zip.extractall('./')
+
+model = pickle.load(open(r'.\model.pkl', 'rb'))
 
 @app.route('/')
 def home():
@@ -37,6 +42,7 @@ def predict():
     output = round(prediction[0], 2)
 
     return render_template('index.html', prediction_text='Predicted Taxi fare should be $ {} @ 90 % Accuracy'.format(output))
+
 
 def calculate_distance(pickup_point, drop_point):
     distance = []
